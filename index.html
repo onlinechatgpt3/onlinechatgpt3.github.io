@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Динозаврик</title>
+	<title>Хоррор-квест</title>
 	<style>
 		body {
 			font-size: 18px;
@@ -10,154 +10,131 @@
 			font-family: Arial, sans-serif;
 			margin: 0;
 			padding: 0;
-			background-color: #f7f7f7;
-		}
-		
-		canvas {
-			display: block;
-			margin: 0 auto;
-			background-color: #fff;
-			border: 1px solid #ccc;
+			background-color: #000;
+			color: #fff;
 		}
 		
 		h1 {
+			font-size: 36px;
+			margin: 20px;
+			text-align: center;
+		}
+		
+		#story {
 			font-size: 24px;
 			margin: 20px;
 			text-align: center;
 		}
+		
+		button {
+			font-size: 18px;
+			margin: 20px;
+			padding: 10px 20px;
+			border: none;
+			background-color: #666;
+			color: #fff;
+			cursor: pointer;
+		}
 	</style>
-	
-	<!-- Подключение API для работы с Telegram -->
-	<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+	<h1>Хоррор-квест</h1>
+	<div id="story">Вы остались одна дома. Снаружи начался сильный шторм. Вдруг вы услышали шум в прихожей...</div>
+	<button id="button1">Проверить, что это было</button>
+	<button id="button2">Спрятаться под кровать</button>
 	
 	<script>
-		// Функция для отправки сообщения в телеграмм бота
-		function sendMessageToTelegram(message) {
-			// Замените YOUR_BOT_TOKEN на токен вашего бота
-			var botToken = 'YOUR_BOT_TOKEN';
-			
-			// Замените YOUR_CHAT_ID на chat_id вашего бота
-			var chatId = 'YOUR_CHAT_ID';
-			
-			// Формируем URL для отправки сообщения
-			var url = 'https://api.telegram.org/bot' + botToken + '/sendMessage?chat_id=' + chatId + '&text=' + message;
-			
-			// Отправляем запрос на URL с помощью AJAX
-			var xhr = new XMLHttpRequest();
-			xhr.open('GET', url, true);
-			xhr.send();
-		}
+		// Получаем элементы кнопок и истории
+		var button1 = document.getElementById('button1');
+		var button2 = document.getElementById('button2');
+		var story = document.getElementById('story');
 		
-		// Получаем элемент canvas и контекст рисования
-		var canvas = document.getElementById('canvas');
-		var ctx = canvas.getContext('2d');
+		// Устанавливаем начальную историю и скрытые параметры
+		var currentStory = 'Вы остались одна дома. Снаружи начался сильный шторм. Вдруг вы услышали шум в прихожей...';
+		var isUnderBed = false;
+		var isFrontDoorOpened = false;
+		var isBackDoorOpened = false;
+		var isGameEnded = false;
 		
-		// Устанавливаем начальные значения для игры
-		var width = canvas.width;
-		var height = canvas.height;
-		var score = 0;
-		var speed = 3;
-		var dinoY = height - 50;
-		var dinoYSpeed = 0;
-		var isGameOver = false;
-		var obstacles = [];
-		
-		// Создаем препятствия
-		function createObstacle() {
-			var obstacle = {
-				x: width,
-				y: height - 30 - Math.floor(Math.random() * 100),
-				width: 20 + Math.floor(Math.random() * 50),
-				height: 20 + Math.floor(Math.random() * 30)
-			};
-			obstacles.push(obstacle);
-		}
-		
-		// Обновляем игровое состояние
-		function update() {
-			// Обновляем позицию динозаврика
-			dinoY += dinoYSpeed;
-			dinoYSpeed += 1;
-			if (dinoY > height - 50) {
-				dinoY = height - 50;
-				dinoYSpeed = 0;
+		// Обработчик события нажатия кнопки "Проверить, что это было"
+		button1.addEventListener('click', function() {
+			if (!isGameEnded) {
+				if (isUnderBed) {
+					currentStory = 'Вы вылезли из-под кровати и осторожно пошли в прихожую. Оказалось, что это был только шум от ветра.';
+					story.innerHTML = currentStory;
+				} else {
+					if (isFrontDoorOpened || isBackDoorOpened) {
+						currentStory = 'Вы смело направились в прихожую, но там никого не было. Вдруг вы услышали шум в комнате.';
+						story.innerHTML = currentStory;
+						button1.innerHTML = 'Идти в комнату';
+						button2.innerHTML = 'Спрятаться под кровать';
+					} else {
+						currentStory = 'Вы подошли к двери в прихожую, ноне можете ее открыть. Вам стало страшно и вы решили спрятаться под кровать.';
+story.innerHTML = currentStory;
+isUnderBed = true;
+button1.innerHTML = 'Проверить, что это было';
+button2.innerHTML = 'Вылезти из-под кровати';
+}
+}
+}
+});
+			// Обработчик события нажатия кнопки "Спрятаться под кровать"
+	button2.addEventListener('click', function() {
+		if (!isGameEnded) {
+			if (isUnderBed) {
+				currentStory = 'Вы вылезли из-под кровати и осторожно пошли в прихожую. Оказалось, что это был только шум от ветра.';
+				story.innerHTML = currentStory;
+				isUnderBed = false;
+				button1.innerHTML = 'Проверить, что это было';
+				button2.innerHTML = 'Спрятаться под кровать';
+			} else {
+				currentStory = 'Вы спрятались под кроватью и затаили дыхание. Вдруг вы услышали, как кто-то зашел в дом...';
+				story.innerHTML = currentStory;
+				button1.innerHTML = 'Проверить, что это было';
+				button2.innerHTML = 'Оставаться спрятанным';
 			}
-			
-			// Добавляем новое препятствие каждые 100 кадров
-			if (score % 100 === 0) {
-				createObstacle();
-			}
-			
-			// Обновляем позицию препятствий и проверяем столкновения
-for (var i = 0; i < obstacles.length; i++) {
-obstacles[i].x -= speed;
-if (obstacles[i].x < -obstacles[i].width) {
-obstacles.splice(i, 1);
-score++;
-}
-if (dinoY + 50 >= height - obstacles[i].height && dinoY <= height - 30 && obstacles[i].x <= 60) {
-isGameOver = true;
-sendMessageToTelegram('Игрок набрал ' + score + ' очков в игре Динозаврик!');
-}
-}
-					// Увеличиваем скорость игры каждые 500 очков
-		if (score % 500 === 0 && speed < 6) {
-			speed++;
-		}
-	}
-	
-	// Рисуем игровое поле
-	function draw() {
-		// Рисуем динозаврика
-		ctx.fillStyle = '#0099cc';
-		ctx.fillRect(30, dinoY, 30, 20);
-		ctx.fillRect(20, dinoY + 20, 50, 10);
-		ctx.fillStyle = '#fff';
-		ctx.fillRect(55, dinoY + 5, 5, 5);
-		
-		// Рисуем препятствия
-		ctx.fillStyle = '#ff6666';
-		for (var i = 0; i < obstacles.length; i++) {
-			ctx.fillRect(obstacles[i].x, obstacles[i].y, obstacles[i].width, obstacles[i].height);
-		}
-		
-		// Рисуем счет
-		ctx.fillStyle = '#000';
-		ctx.font = '16px Arial';
-		ctx.fillText('Счет: ' + score, 10, 20);
-		
-		// Если игра окончена, рисуем сообщение об окончании игры
-		if (isGameOver) {
-			ctx.fillStyle = '#000';
-			ctx.font = '36px Arial';
-			ctx.fillText('Игра окончена!', width / 2 - 140, height / 2);
-		}
-	}
-	
-	// Обработчик события нажатия на экран
-	canvas.addEventListener('touchstart', function(event) {
-		if (!isGameOver) {
-			dinoYSpeed = -15;
-		} else {
-			// Если игра окончена, перезапускаем игру
-			score = 0;
-			speed = 3;
-			dinoY = height - 50;
-			dinoYSpeed = 0;
-			isGameOver = false;
-			obstacles = [];
 		}
 	});
 	
-	// Главный игровой цикл
-	function gameLoop() {
-		update();
-		draw();
-		if (!isGameOver) {
-			requestAnimationFrame(gameLoop);
+	// Обработчик события нажатия кнопки "Идти в комнату"
+	button1.addEventListener('click', function() {
+		if (!isGameEnded && (isFrontDoorOpened || isBackDoorOpened)) {
+			currentStory = 'Вы направились в комнату, но там было темно. Вы включили свет и увидели, что в комнате никого нет. Вдруг вы услышали шум в шкафу...';
+			story.innerHTML = currentStory;
+			button1.innerHTML = 'Открыть шкаф';
+			button2.innerHTML = 'Убежать из комнаты';
 		}
-	}
-	requestAnimationFrame(gameLoop);
+	});
+	
+	// Обработчик события нажатия кнопки "Открыть шкаф"
+	button1.addEventListener('click', function() {
+		if (!isGameEnded) {
+			currentStory = 'Вы открыли шкаф и увидели, что там никого нет. Вдруг вы услышали, как кто-то подошел к комнате...';
+			story.innerHTML = currentStory;
+			button1.innerHTML = 'Спрятаться под кровать';
+			button2.innerHTML = 'Спрятаться в шкафу';
+		}
+	});
+	
+	// Обработчик события нажатия кнопки "Спрятаться в шкафу"
+	button2.addEventListener('click', function() {
+		if (!isGameEnded) {
+			currentStory = 'Вы спрятались в шкафу и затаили дыхание. Вдруг вы услышали, как кто-то вошел в комнату...';
+			story.innerHTML = currentStory;
+			button1.innerHTML = 'Спрятаться под кровать';
+button2.innerHTML = 'Оставаться спрятанным';
+}
+});
+			// Обработчик события нажатия кнопки "Убежать из комнаты"
+	button2.addEventListener('click', function() {
+		if (!isGameEnded) {
+			currentStory = 'Вы выбежали из комнаты, но там было темно и вы не видели, куда бежать. Вдруг вы услышали, как кто-то подошел к вам...';
+			story.innerHTML = currentStory;
+			button1.innerHTML = 'Спрятаться под кровать';
+			button2.innerHTML = 'Спрятаться в шкафу';
+		}
+	});
 </script>
 </body>
 </html>
+
