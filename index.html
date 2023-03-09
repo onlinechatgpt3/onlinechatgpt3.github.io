@@ -1,15 +1,51 @@
-<!DOCTYPE html>
 <html>
-<head>
-	<title>Моя первая веб-страница</title>
-</head>
-<body>
-	<h1>Добро пожаловать на мою страницу!</h1>
-	<p>Это моя первая веб-страница.</p>
-	<ul>
-		<li>Первый пункт</li>
-		<li>Второй пункт</li>
-		<li>Третий пункт</li>
-	</ul>
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/phaser/dist/phaser.min.js"></script>
+    </head>
+    <body>
+        <script>
+            const gameConfig = {
+                type: Phaser.AUTO,
+                width: 800,
+                height: 600,
+                scene: {
+                    preload: preload,
+                    create: create,
+                    update: update
+                }
+            };
+
+            const game = new Phaser.Game(gameConfig);
+
+            function preload() {
+                // Загрузка изображений фруктов
+                this.load.image('apple', 'apple.png');
+                this.load.image('banana', 'banana.png');
+                this.load.image('orange', 'orange.png');
+            }
+
+            function create() {
+                // Создание спрайтов для фруктов
+                this.apple = this.add.sprite(400, 200, 'apple');
+                this.banana = this.add.sprite(400, 300, 'banana');
+                this.orange = this.add.sprite(400, 400, 'orange');
+                // Добавление интерактивности для спрайтов фруктов
+this.apple.setInteractive();
+this.banana.setInteractive();
+this.orange.setInteractive();
+
+// Обработка кликов на спрайтах фруктов
+this.input.on('gameobjectdown', function (pointer, gameObject) {
+    console.log('Вы выбрали: ' + gameObject.texture.key);
+}, this);
+}
+
+function update() {
+// Добавление анимации вращения для фруктов
+this.apple.angle += 1;
+this.banana.angle += 1;
+this.orange.angle += 1;
+}
+</script>
 </body>
 </html>
