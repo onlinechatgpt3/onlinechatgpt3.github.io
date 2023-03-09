@@ -1,51 +1,71 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <script src="https://cdn.jsdelivr.net/npm/phaser/dist/phaser.min.js"></script>
-    </head>
-    <body>
-        <script>
-            const gameConfig = {
-                type: Phaser.AUTO,
-                width: 800,
-                height: 600,
-                scene: {
-                    preload: preload,
-                    create: create,
-                    update: update
-                }
-            };
+  <head>
+    <meta charset="UTF-8">
+    <title>Fruit Slot Machine</title>
+    <style>
+      #slot-machine {
+        display: flex;
+        justify-content: center;
+      }
 
-            const game = new Phaser.Game(gameConfig);
+      .slot {
+        width: 100px;
+        height: 150px;
+        text-align: center;
+        margin: 0 50px;
+        border: 1px solid black;
+      }
 
-            function preload() {
-                // Загрузка изображений фруктов
-                this.load.image('apple', 'apple.png');
-                this.load.image('banana', 'banana.png');
-                this.load.image('orange', 'orange.png');
-            }
+      #result {
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Fruit Slot Machine</h1>
+    <div id="slot-machine">
+      <div class="slot">
+        <img id="slot1" src="img/cherry.png" alt="Cherry">
+      </div>
+      <div class="slot">
+        <img id="slot2" src="img/lemon.png" alt="Lemon">
+      </div>
+      <div class="slot">
+        <img id="slot3" src="img/banana.png" alt="Banana">
+      </div>
+    </div>
+    <button id="spin-button">Spin</button>
+    <div id="result"></div>
+  </body>
+  <script>
+    const spinButton = document.getElementById("spin-button");
+    const slot1 = document.getElementById("slot1");
+    const slot2 = document.getElementById("slot2");
+    const slot3 = document.getElementById("slot3");
+    const result = document.getElementById("result");
+    const fruits = ["cherry", "lemon", "banana"];
 
-            function create() {
-                // Создание спрайтов для фруктов
-                this.apple = this.add.sprite(400, 200, 'apple');
-                this.banana = this.add.sprite(400, 300, 'banana');
-                this.orange = this.add.sprite(400, 400, 'orange');
-                // Добавление интерактивности для спрайтов фруктов
-this.apple.setInteractive();
-this.banana.setInteractive();
-this.orange.setInteractive();
+    spinButton.addEventListener("click", function() {
+      spin();
+    });
 
-// Обработка кликов на спрайтах фруктов
-this.input.on('gameobjectdown', function (pointer, gameObject) {
-    console.log('Вы выбрали: ' + gameObject.texture.key);
-}, this);
-}
+    function spin() {
+      const fruit1 = fruits[Math.floor(Math.random() * fruits.length)];
+      const fruit2 = fruits[Math.floor(Math.random() * fruits.length)];
+      const fruit3 = fruits[Math.floor(Math.random() * fruits.length)];
 
-function update() {
-// Добавление анимации вращения для фруктов
-this.apple.angle += 1;
-this.banana.angle += 1;
-this.orange.angle += 1;
-}
-</script>
-</body>
+      slot1.src = `img/${fruit1}.png`;
+      slot2.src = `img/${fruit2}.png`;
+      slot3.src = `img/${fruit3}.png`;
+
+      if (fruit1 === fruit2 && fruit2 === fruit3) {
+        result.innerHTML = "You won!";
+      } else {
+        result.innerHTML = "Try again...";
+      }
+    }
+  </script>
 </html>
